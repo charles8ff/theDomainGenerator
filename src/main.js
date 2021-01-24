@@ -5,7 +5,14 @@ const PRONOUNS = ["the", "our", "da"];
 const ADJS = ["greatest", "almighty", "super"];
 const NAMES = ["site", "hive", "place"];
 const LINKERS = ["of", "for", "from"];
-const SURNAMES = ["coders", "hackers", "crackheads", "memes"];
+const SURNAMES = [
+  "coders",
+  "hackers",
+  "crackheads",
+  "memes",
+  "internet",
+  "cyborg"
+];
 const DOMAIN_EXTENSIONS = [
   ".com",
   ".org",
@@ -42,6 +49,17 @@ const THE_DOMAIN_PIECES = [
   DOMAIN_EXTENSIONS
 ];
 
+function generateExtRegEx(ourEXT) {
+  let extensionsRegEx = "(";
+  for (let elem of ourEXT) {
+    extensionsRegEx += "(" + elem.slice(1) + elem + ")|";
+  }
+  extensionsRegEx = extensionsRegEx.slice(0, extensionsRegEx.length - 1);
+  extensionsRegEx += ")$";
+  console.log(extensionsRegEx);
+  return extensionsRegEx;
+}
+
 function generateDomains(ourARR) {
   let auxiliarArray = ourARR.slice();
   let headOfAuxArr = auxiliarArray.shift();
@@ -62,9 +80,18 @@ function generateDomains(ourARR) {
 }
 window.onload = function() {
   let allDomains = [];
+
+  let ourRegEx = new RegExp(generateExtRegEx(DOMAIN_EXTENSIONS));
+  console.log(ourRegEx);
   allDomains = generateDomains(THE_DOMAIN_PIECES);
+
   let list = document.querySelector(".dList");
   for (let elem of allDomains) {
+    if (elem.match(ourRegEx)) {
+      let aux = elem.match(ourRegEx)[0];
+      elem = elem.slice(0, -aux.length);
+      elem = elem.concat(aux.slice(-aux.length / 2 - 1));
+    }
     let newItem = document.createElement("li");
     let textnode = document.createTextNode(elem);
     newItem.appendChild(textnode);
